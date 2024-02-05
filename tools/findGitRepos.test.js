@@ -53,6 +53,6 @@ describe('find git repo', () => {
 
         const actual = extract('nested_dir')
 
-        expect(actual).toEqual(['nested_dir\\dir1\\dir11', 'nested_dir\\dir2'])
+        expect(actual).toEqual(['nested_dir/dir1/dir11', 'nested_dir/dir2'])
     })
 })
