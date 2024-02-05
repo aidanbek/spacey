@@ -26,6 +26,8 @@ mock({
     }
 })
 
+afterAll(() => mock.restore())
+
 describe('find git repo', () => {
     it('no git repo in empty dir', () => {
         const actual = extract('empty_folder')
