@@ -15,8 +15,10 @@ program
 program
     .command('deploy')
     .description('Deploys all repositories')
-    .argument('<directory>', 'directory to install')
-    .action((directory) => deploy(resolve(directory)));
+    .requiredOption('-d, --directory <string>', 'directory to install')
+    .requiredOption('-gid, --group-id <group_id>', 'group id')
+    .option('-t, --token <string>', 'access token')
+    .action((options) => deploy(options));
 
 program
     .command('envize')

@@ -2,19 +2,20 @@ const {Gitlab} = require('@gitbeaker/rest');
 const {resolve} = require('path');
 const {execSync} = require("child_process");
 
-const token =  'glpat-HPxGxsftzakTrywwsF_g';
-const api = new Gitlab({token});
 const {dirNotExist} = require('./tools')
 
-const mainGroupId = '12415527';
+async function deploy(options) {
+    const targetDirectory = resolve(options.directory);
+    const mainGroupId = options.groupId;
 
-
-
-async function deploy(targetDirectory) {
     if (dirNotExist(targetDirectory)) {
         console.log(`${targetDirectory} does not exist`)
         return;
     }
+
+    const token = options.token;
+
+    const api = new Gitlab({token});
 
     const subgroups = await api.Groups.allSubgroups(mainGroupId);
 
@@ -42,7 +43,10 @@ async function deploy(targetDirectory) {
             console.log(`${targetDirectory}/${folderName}/${p.path}: trying to clone`)
 
             if (dirNotExist(`${targetDirectory}/${folderName}/${p.path}`)) {
-                const url = p.http_url_to_repo.replace('https://gitlab.com', `https://oauth2:${token}@gitlab.com`)
+                const url = token
+                    ? p.http_url_to_repo.replace('https://gitlab.com', `https://oauth2:${token}@gitlab.com`)
+                    : p.http_url_to_repo
+
                 const cloneCommand = `git clone ${url} ${targetDirectory}/${folderName}/${p.path}`;
 
                 console.log(`running ${p.http_url_to_repo}`)
